@@ -1,0 +1,62 @@
+<h2>Three Approaches: digit_number Component</h2>
+<p class="subtitle">How to sample segments and classify digits. Pick the architecture that fits your constraints.</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Single-point sampling per segment</h3>
+      <p>User defines one (x,y) coordinate per segment (7 × 4 = 28 points). Component reads brightness at that exact pixel. If brightness &gt; threshold → segment ON. Decode pattern → digit.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>Simplest config</li>
+          <li>Minimal CPU on ESP32</li>
+          <li>Deterministic</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>Sensitive to blur / camera shift</li>
+          <li>One bad pixel = wrong digit</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Area sampling per segment ⭐ Recommended</h3>
+      <p>User defines one (x,y) center + optional radius (default 2px). Component averages brightness over NxN patch. Works despite blur. Threshold fixed or auto (auto = half-way between darkest and brightest patch seen this frame).</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>Blur-tolerant (glow spreads → still bright)</li>
+          <li>Still cheap on ESP32 (small patch)</li>
+          <li>Auto-threshold adapts to lighting</li>
+          <li>Camera can be moved closer</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>28 center coords still needed in YAML</li>
+          <li>Slightly more config than A</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Digit bounding box + auto segment layout</h3>
+      <p>User defines bounding box per digit (x,y,w,h). Component divides the box into 7 standard 7-segment zones automatically. No per-segment coords needed.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul>
+          <li>Minimal YAML config (4 boxes vs 28 points)</li>
+          <li>Easier to set up</li>
+        </ul></div>
+        <div class="cons"><h4>Cons</h4><ul>
+          <li>Less precise — assumes standard segment proportions</li>
+          <li>Fails if digits aren't standard 7-seg layout</li>
+          <li>Harder to debug misreads</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+</div>
