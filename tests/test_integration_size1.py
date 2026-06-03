@@ -25,15 +25,15 @@ from PIL import Image
 
 from tests.validate import derive_segment_centers, decode_digit
 
-IMG_DIR = Path(__file__).parent.parent / "test_cases" / "size_4"
+IMG_DIR = Path(__file__).parent.parent / "test_cases" / "size_1"
 
 # Calibrated for test_cases/size_4 (800x600, lower display row).
 # Digits shifted down vs size_3 — camera position/zoom changed.
 DIGIT_ANCHORS = [
-    {"a": (144, 265), "g": (144, 398), "b": (190, 331)},  # by = (265+398)//2
-    {"a": (296, 265), "g": (296, 398), "b": (335, 331)},
-    {"a": (447, 265), "g": (447, 398), "b": (490, 331)},
-    {"a": (617, 265), "g": (617, 398), "b": (663, 331)},
+    {"a": (151, 199), "g": (147, 324), "b": (198, 261)},  # bx adjusted: bx_old - dx
+    {"a": (308, 209), "g": (303, 325), "b": (361, 267)},
+    {"a": (473, 211), "g": (468, 329), "b": (519, 270)},
+    {"a": (630, 209), "g": (628, 331), "b": (675, 270)},
 ]
 SAMPLE_RADIUS = 5
 DISPLAY_OFF_THRESHOLD = 60
@@ -130,28 +130,20 @@ def test_dashes():
 # ── Digit images ─────────────────────────────────────────────────────────────
 
 @pytest.mark.parametrize("filename,expected_mm", [
-    ("capture.jpg",       564),
-    ("capture (1).jpg",   564),
-    ("capture (2).jpg",   564),
-    ("capture (3).jpg",   838),
-    ("capture (4).jpg",  1218),
-    ("capture (5).jpg",  1964),
-    ("capture (6).jpg",  2716),
-    ("capture (7).jpg",  1366),
-    ("capture (8).jpg",  1060),
-    ("capture (9).jpg",  1302),
-    ("capture (10).jpg", 1186),
-    ("capture (11).jpg",  861),
-    ("capture (12).jpg",  792),
-    ("capture (13).jpg",  837),
-    ("capture (14).jpg",  332),
-    ("capture (15).jpg",  533),
-    ("capture (16).jpg",  837),
-    ("capture (17).jpg",  320),
-    ("capture (18).jpg",  486),
-    ("capture (19).jpg",  495),
-    ("capture (20).jpg",  837),
-    ("capture (21).jpg",  295),
+    ("capture.jpg",       742),
+    ("capture (1).jpg",   744),
+    ("capture (2).jpg",   835),
+    ("capture (3).jpg",   270),
+    ("capture (4).jpg",  761),
+    ("capture (5).jpg",  777),
+    ("capture (6).jpg",  778),
+    ("capture (7).jpg",  812),
+    ("capture (8).jpg",  732),
+    ("capture (9).jpg",  497),
+    ("capture (10).jpg", 378),
+    ("capture (11).jpg",  1166),
+    ("capture (12).jpg",  1692),
+    ("capture (13).jpg",  2507),
 ])
 def test_decode(filename, expected_mm):
     result = decode_image(IMG_DIR / filename)
